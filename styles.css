@@ -1,0 +1,12 @@
+#container {
+    display: flex;
+    flex-wrap: wrap;
+    border: 5px solid gray;
+}
+.grid-item {
+    background-color: white;
+    width: calc(100% / 16);
+    height: 64px;
+    width: 64px;
+    box-sizing: border-box;
+}
