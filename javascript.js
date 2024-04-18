@@ -5,63 +5,66 @@ const gridText = document.getElementById("gridText");
 const clearButton = document.getElementById("clear");
 let isDrawing = false;
 let gridSize = 16;
+let gridItems; // Array to store grid item elements
 
-
-// To make drawing on grid possible in the DOM
 function draw(event) {
-    // Condition to check if the created grid is present or not to make the color apply
-    if(event.target.classList.contains("grid-item") && isDrawing) {
-        const hoverdItem = event.target;
-        hoverdItem.style.backgroundColor = "black";
-        event.preventDefault(); // Prevent mouse from breaking mouseup event
+  const clickedItem = event.target;
+  if (clickedItem.classList.contains("grid-item") && isDrawing) {
+    if (!clickedItem.classList.contains("drawn")) {
+      clickedItem.classList.add("drawn"); // Mark as drawn
     }
+    event.preventDefault(); // Prevent mouse from interrupting the drawing
+  }
+  window.requestAnimationFrame(); // Code to update the grid visually (already in draw function)
 }
 
 function createGrid(size) {
-    // Creating grid elements for rows
-    for (let i = 0; i < size; i++) {
-    // Another loop for columns within each row
-        for (let j = 0; j < size; j++) {
-            const gridItem = document.createElement("div");
-            gridItem.classList.add("grid-item");
-            // Dividing each grid by the grid size
-            gridItem.style.width = `calc(100% / ${size})`;
-            // Drawing effect
-            gridItem.addEventListener("mousedown", (e) => {
-                isDrawing = true;
-                draw(e);
-            });
-            window.addEventListener("mouseup", () => {
-                isDrawing = false;
-            });
-            gridItem.addEventListener("mousemove", (e) => {
-                if (isDrawing) {
-                    requestAnimationFrame(() => draw(e));
-                }
-            });
-            container.appendChild(gridItem);
-        }
+  gridItems = []; // Reset grid items array
+  container.innerHTML = ""; // Clear container
+
+  for (let i = 0; i < size; i++) {
+    for (let j = 0; j < size; j++) {
+      const gridItem = document.createElement("div");
+      gridItem.classList.add("grid-item");
+      gridItem.style.width = `calc(100% / ${size})`;
+      gridItems.push(gridItem); // Add item to gridItems array
+      container.appendChild(gridItem);
     }
-    gridText.textContent = `${size}x${size}`;
+  }
+  gridText.textContent = `${size}x${size}`; // Display grid size
+
+  // Event listeners for all grid items at once (more efficient)
+  container.addEventListener("mousedown", (e) => {
+    if (e.target.classList.contains("grid-item")) {
+      isDrawing = true;
+      draw(e);
+    }
+  });
+  window.addEventListener("mouseup", () => {
+    isDrawing = false;
+  });
+  container.addEventListener("mousemove", (e) => {
+    if (isDrawing) {
+      draw(e);
+    }
+  });
 }
 
 createGrid(gridSize);
 
 // Enter button work
 inputButton.addEventListener("click", () => {
-    gridSize = inputGrid.value;
-    if (gridSize > 100 || gridSize <= 0) {
-        alert("Error");
-    }
-    else {
-        container.innerHTML = "";
-        createGrid(gridSize);
-    }
-});
-
-// Claer button work
-clearButton.addEventListener("click", () => {
-    container.innerHTML = "";
+  gridSize = inputGrid.value;
+  if (gridSize > 100 || gridSize <= 0) {
+    alert("Error");
+  } else {
     createGrid(gridSize);
+  }
 });
 
+// Clear button work
+clearButton.addEventListener("click", () => {
+  for (const item of gridItems) {
+    item.classList.remove("drawn"); // Remove drawn class from all items
+  }
+});
