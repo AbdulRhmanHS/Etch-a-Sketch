@@ -1,8 +1,17 @@
 body {
-    background-color: white;
+    background-color: rgb(230, 230, 230);
 }
 h1 {
+    font-size: 56px;
+    margin-bottom: 16px;
     text-align: center;
+    color: rgb(255, 255, 255);
+    text-shadow: -2px 2px 0px #c7c7c7,
+                 -4px 4px 0px #a1a1a1,
+                 -6px 6px 0px #666666;
+}
+label {
+    color: gray;
 }
 #container {
     display: flex;
