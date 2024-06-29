@@ -15,7 +15,6 @@ function draw(event) {
         }
         event.preventDefault(); // Prevent mouse from interrupting the drawing
     }
-    window.requestAnimationFrame(draw); // Code to update the grid visually (already in draw function)
 }
 
 function createGrid(size) {
