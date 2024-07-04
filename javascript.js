@@ -3,23 +3,34 @@ const inputGrid = document.getElementById("grid");
 const inputButton = document.getElementById("enter");
 const gridText = document.getElementById("gridText");
 const clearButton = document.getElementById("clear");
+const colorPicker = document.getElementById("colorPicker");
 let isDrawing = false;
 let gridSize = 16;
 let gridItems; // Array to store grid item elements
+let currentColor = colorPicker.value;
+
+// Upadte the current color
+colorPicker.addEventListener("input", (e) => {
+    currentColor = e.target.value;
+});
+
+function clearContainer(container) {
+    while (container.firstChild) {
+        container.removeChild(container.firstChild);
+    }
+}
 
 function draw(event) {
     const clickedItem = event.target;
     if (clickedItem.classList.contains("grid-item") && isDrawing) {
-        if (!clickedItem.classList.contains("drawn")) {
-            clickedItem.classList.add("drawn"); // Mark as drawn
-        }
+        clickedItem.style.backgroundColor = currentColor;; // Change grid color
         event.preventDefault(); // Prevent mouse from interrupting the drawing
     }
 }
 
 function createGrid(size) {
     gridItems = []; // Reset grid items array
-    container.innerHTML = ""; // Clear container
+    clearContainer(container); // Clear container
 
     for (let i = 0; i < size; i++) {
         for (let j = 0; j < size; j++) {
@@ -64,6 +75,6 @@ inputButton.addEventListener("click", () => {
 // Clear button work
 clearButton.addEventListener("click", () => {
     for (const item of gridItems) {
-        item.classList.remove("drawn"); // Remove drawn class from all items
+        item.style.backgroundColor = "white"; // Return all gird color to white
     }
 });
