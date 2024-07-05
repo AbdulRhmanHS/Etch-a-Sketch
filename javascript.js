@@ -4,6 +4,7 @@ const inputButton = document.getElementById("enter");
 const gridText = document.getElementById("gridText");
 const clearButton = document.getElementById("clear");
 const colorPicker = document.getElementById("colorPicker");
+const colorPickerLabel = document.querySelector('.colorPickerContainer label');
 let isDrawing = false;
 let gridSize = 16;
 let gridItems; // Array to store grid item elements
@@ -12,6 +13,27 @@ let currentColor = colorPicker.value;
 // Upadte the current color
 colorPicker.addEventListener("input", (e) => {
     currentColor = e.target.value;
+    colorPickerLabel.style.color = currentColor; // Change label background to match selected color
+});
+
+// Add hover effect for color picker dynamically
+colorPickerLabel.addEventListener("mouseover", () => {
+    colorPickerLabel.style.color = currentColor;
+    if (currentColor.toLowerCase() === "#ffffff" || currentColor.toLowerCase() === "#fff") {
+        colorPickerLabel.style.backgroundColor = "#000";
+    }
+    else {
+        colorPickerLabel.style.backgroundColor = "#fff";
+    }
+});
+colorPickerLabel.addEventListener("mouseout", () => {
+    colorPickerLabel.style.backgroundColor = currentColor;
+    if (currentColor.toLowerCase() === "#ffffff" || currentColor.toLowerCase() === "#fff") {
+        colorPickerLabel.style.color = "#000";
+    }
+    else {
+        colorPickerLabel.style.color = "#fff";
+    }
 });
 
 function clearContainer(container) {
