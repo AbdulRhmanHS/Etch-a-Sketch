@@ -6,11 +6,70 @@ const clearButton = document.getElementById("clear");
 const colorPicker = document.getElementById("colorPicker");
 const colorPickerLabel = document.querySelector('.colorPickerContainer label');
 const rainbowButton = document.getElementById("rainbow");
+
 let isRainbow = false;
 let isDrawing = false;
+let isMiddleDrawing = false;
 let gridSize = 16;
 let gridItems; // Array to store grid item elements
 let currentColor = colorPicker.value;
+
+function getRandomColor() {
+    const letters = '0123456789ABCDEF';
+    let color = '#';
+    for (let i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+}
+
+function draw(event) {
+    const clickedItem = event.target;
+    if (clickedItem.classList.contains("grid-item") && isDrawing) {
+        if (isRainbow) {
+            clickedItem.style.backgroundColor = getRandomColor(); // Set random color in rainbow mode
+        }
+        else {
+            clickedItem.style.backgroundColor = currentColor;
+        }
+        clickedItem.style.opacity = 1; // Reset opacity to 1
+        event.preventDefault(); // Prevent mouse from interrupting the drawing
+    }
+}
+
+function drawWithOpacity(event) {
+    const clickedItem = event.target;
+    if (clickedItem.classList.contains("grid-item") && isMiddleDrawing) {
+        clickedItem.style.backgroundColor = currentColor;
+        let opacity = parseFloat(clickedItem.style.opacity) || 1; // Default opacity is 1
+        opacity = Math.max(opacity - 0.1, 0.1); // Decrease opacity but not less than 0.1
+        clickedItem.style.opacity = opacity.toFixed(1); // Set new opacity with only one number after the decimal point
+        event.preventDefault(); // Prevent mouse from interrupting the drawing
+    }
+}
+
+// For recreating grid.
+function clearContainer(container) {
+    while (container.firstChild) {
+        container.removeChild(container.firstChild);
+    }
+}
+
+function createGrid(size) {
+    gridItems = []; // Reset grid items array
+    clearContainer(container); // Clear container
+
+    for (let i = 0; i < size; i++) {
+        for (let j = 0; j < size; j++) {
+            const gridItem = document.createElement("div");
+            gridItem.classList.add("grid-item");
+            gridItem.style.width = `calc(100% / ${size})`;
+            gridItems.push(gridItem); // Add item to gridItems array
+            container.appendChild(gridItem);
+        }
+    }
+    gridText.textContent = `${size}x${size}`; // Display grid size
+}
 
 // Upadte the current color
 colorPicker.addEventListener("input", (e) => {
@@ -38,63 +97,27 @@ colorPickerLabel.addEventListener("mouseout", () => {
     }
 });
 
-function clearContainer(container) {
-    while (container.firstChild) {
-        container.removeChild(container.firstChild);
-    }
-}
-
-function getRandomColor() {
-    const letters = '0123456789ABCDEF';
-    let color = '#';
-    for (let i = 0; i < 6; i++) {
-        color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
-}
-
-function draw(event) {
-    const clickedItem = event.target;
-    if (clickedItem.classList.contains("grid-item") && isDrawing) {
-        if (isRainbow) {
-            clickedItem.style.backgroundColor = getRandomColor(); // Set random color in rainbow mode
-        }
-        else {
-            clickedItem.style.backgroundColor = currentColor;
-        }
-        event.preventDefault(); // Prevent mouse from interrupting the drawing
-    }
-}
-
-function createGrid(size) {
-    gridItems = []; // Reset grid items array
-    clearContainer(container); // Clear container
-
-    for (let i = 0; i < size; i++) {
-        for (let j = 0; j < size; j++) {
-            const gridItem = document.createElement("div");
-            gridItem.classList.add("grid-item");
-            gridItem.style.width = `calc(100% / ${size})`;
-            gridItems.push(gridItem); // Add item to gridItems array
-            container.appendChild(gridItem);
-        }
-    }
-    gridText.textContent = `${size}x${size}`; // Display grid size
-}
-
 // Event listeners for all grid items at once (more efficient)
 container.addEventListener("mousedown", (e) => {
-    if (e.target.classList.contains("grid-item")) {
-      isDrawing = true;
-      draw(e);
+    if (e.button === 0 && e.target.classList.contains("grid-item")) {
+        isDrawing = true;
+        isMiddleDrawing = false;
+        draw(e);
+    } else if (e.button === 1 && e.target.classList.contains("grid-item")) {
+        isMiddleDrawing = true;
+        isDrawing = false;
+        drawWithOpacity(e);
     }
 });
 window.addEventListener("mouseup", () => {
     isDrawing = false;
+    isMiddleDrawing = false;
 });
 container.addEventListener("mousemove", (e) => {
     if (isDrawing) {
-      draw(e);
+        draw(e);
+    } else if (isMiddleDrawing) {
+        drawWithOpacity(e);
     }
 });
 
@@ -110,10 +133,11 @@ inputButton.addEventListener("click", () => {
     }
 });
 
-// Clear button work
+
 clearButton.addEventListener("click", () => {
     for (const item of gridItems) {
-        item.style.backgroundColor = "white"; // Return all gird color to white
+        item.style.backgroundColor = "white"; // Return all grid color to white
+        item.style.opacity = 1; // Reset opacity
     }
 });
 
