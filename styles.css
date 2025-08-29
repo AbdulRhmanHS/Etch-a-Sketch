@@ -1,6 +1,12 @@
 body {
     background-color: rgb(255, 255, 255);
     font-family: 'Baloo Tamma', cursive;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 h1 {
     font-size: 56px;
@@ -38,6 +44,10 @@ label {
     color: gray;
 }
 
+main {
+    max-width: 700px;
+}
+
 
 /*Drawing Board*/
 #container {
@@ -48,9 +58,6 @@ label {
     height: 700px;
     margin: 20px auto;
 }
-#grid {
-    height: 20px;
-}
 .grid-item {
     background-color: white;
     box-sizing: border-box;
@@ -59,8 +66,9 @@ label {
 
 /*Input box for entring grid size*/
 .inputArea {
+    max-width: 700px;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: end;
     gap: 10px;
 }
@@ -144,4 +152,46 @@ label {
     font-size: 24px;
     font-weight: bold;
 }
+
+input[type=range] {
+  -webkit-appearance: none; /* remove default (Chrome, Safari, Edge) */
+  appearance: none;
+  width: 300px;
+  height: 5px;
+  background: var(--slider-color, #000);  /* fallback track color */
+  border-radius: 5px;
+  outline: none;
+  cursor: pointer;
+}
+
+input[type=range]::-webkit-slider-runnable-track {
+  background: var(--slider-color, #000);
+}
+input[type=range]::-moz-range-track {
+  background: var(--slider-color, #000);
+}
+
+/* Thumb (the circle knob) */
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  aspect-ratio: 1 / 1;
+  width: 18px;
+  background: var(--slider-color, #000);
+  border-radius: 50%;
+  border: 2px solid #fff;
+  box-shadow: 0 0 2px rgba(0,0,0,0.5);
+  cursor: grab;
+  margin: -8px 0; /* centers thumb on track */
+}
+input[type=range]::-moz-range-thumb {
+  aspect-ratio: 1 /1;
+  width: 18px;
+  background: var(--slider-color, #000);
+  border-radius: 50%;
+  border: 2px solid #fff;
+  box-shadow: 0 0 2px rgba(0,0,0,0.5);
+  cursor: grab;
+}
+
 

@@ -1,7 +1,6 @@
 const container = document.querySelector("#container");
 const inputGrid = document.getElementById("grid");
 const inputButton = document.getElementById("enter");
-const gridText = document.getElementById("gridText");
 const clearButton = document.getElementById("clear");
 const colorPicker = document.getElementById("colorPicker");
 const colorPickerLabel = document.querySelector('.colorPickerContainer label');
@@ -11,7 +10,6 @@ let isRainbow = false;
 let isDrawing = false;
 let isMiddleDrawing = false;
 let gridSize = 16;
-let gridItems; // Array to store grid item elements
 let currentColor = colorPicker.value;
 
 function getRandomColor() {
@@ -56,7 +54,7 @@ function clearContainer(container) {
 }
 
 function createGrid(size) {
-    gridItems = []; // Reset grid items array
+
     clearContainer(container); // Clear container
 
     for (let i = 0; i < size; i++) {
@@ -64,10 +62,14 @@ function createGrid(size) {
             const gridItem = document.createElement("div");
             gridItem.classList.add("grid-item");
             gridItem.style.width = `calc(100% / ${size})`;
-            gridItems.push(gridItem); // Add item to gridItems array
             container.appendChild(gridItem);
         }
     }
+
+    const gridText = document.getElementById("gridText");
+    const girdLabel = document.querySelector('.inputBox label');
+
+    girdLabel.textContent = `Grid Size: ${size}x${size}`; // Display grid size at start
     gridText.textContent = `${size}x${size}`; // Display grid size
 }
 
@@ -96,6 +98,20 @@ colorPickerLabel.addEventListener("mouseout", () => {
         colorPickerLabel.style.color = "#fff";
     }
 });
+
+// Update grid size when moving the slider
+inputGrid.addEventListener("input", (e) => {
+  const gridSize = e.target.value;
+  const gridLabel = document.querySelector('.inputBox label');
+  gridLabel.textContent = `Grid Size: ${gridSize}x${gridSize}`;
+});
+
+// Update slider color with the color picker
+colorPicker.addEventListener("input", (e) => {
+  const color = e.target.value;
+  inputGrid.style.setProperty("--slider-color", color);
+});
+
 
 // Event listeners for all grid items at once (more efficient)
 container.addEventListener("mousedown", (e) => {
@@ -135,10 +151,10 @@ inputButton.addEventListener("click", () => {
 
 
 clearButton.addEventListener("click", () => {
-    for (const item of gridItems) {
+    container.querySelectorAll(".grid-item").forEach((item) => {
         item.style.backgroundColor = "white"; // Return all grid color to white
         item.style.opacity = 1; // Reset opacity
-    }
+    })
 });
 
 rainbowButton.addEventListener('click', () => {
